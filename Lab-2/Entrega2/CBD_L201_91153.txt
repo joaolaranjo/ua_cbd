@@ -1,0 +1,115 @@
+https://docs.mongodb.com/manual/mongo/
+
+> use [dbname]
+> use test
+	switched to db test
+
+> db
+	test
+
+> db.testCollection.insert({
+   _id: 0,
+   name: "João",
+   lastname: "Laranjo",
+   curso: "LEI",
+}
+
+> db.testCollection.find()
+{ 
+    "_id" : 0.0, 
+    "name" : "João", 
+    "lastname" : "Laranjo", 
+    "curso" : "LEI"
+}
+
+> db.testCollection.insert([
+{
+    _id: 1,
+    //name: "Teste1",
+    lastname: "Teste",
+    curso: "Artes"
+},
+{
+    _id: 25,
+    name: "Ana",
+    //lastname: "Peixoto",
+    curso: "Bale"
+}])
+
+> db.testCollection.find()
+{ 
+    "_id" : 0.0, 
+    "name" : "João", 
+    "lastname" : "Laranjo", 
+    "curso" : "LEI"
+}
+{ 
+    "_id" : 1.0, 
+    "lastname" : "Teste", 
+    "curso" : "Artes"
+}
+{ 
+    "_id" : 25.0, 
+    "name" : "Ana", 
+    "curso" : "Bale"
+}
+
+> db.testCollection.update({'_id': 1.0},{$set:{
+        "name" : "Teste1", 
+        "lastname" : "Teste", 
+        "curso" : "Estudasses"}}
+)
+
+{ 
+    "_id" : 0.0, 
+    "name" : "João", 
+    "lastname" : "Laranjo", 
+    "curso" : "LEI"
+}
+{ 
+    "_id" : 1.0, 
+    "lastname" : "Teste", 
+    "curso" : "Estudasses", 
+    "name" : "Teste1"
+}
+{ 
+    "_id" : 25.0, 
+    "name" : "Ana", 
+    "curso" : "Bale"
+}
+
+> db.testCollection.update({'_id':{$gte: 10}},
+	{$set:{'lastname':'last Name All IDs > 10'}})
+
+{ 
+    "_id" : 0.0, 
+    "name" : "João", 
+    "lastname" : "Laranjo", 
+    "curso" : "LEI"
+}
+{ 
+    "_id" : 1.0, 
+    "lastname" : "Teste", 
+    "curso" : "Estudasses", 
+    "name" : "Teste1"
+}
+{ 
+    "_id" : 25.0, 
+    "name" : "Ana", 
+    "curso" : "Bale", 
+    "lastname" : "last Name All IDs > 10"
+}
+
+> show dbs
+	Lab-2   0.001GB
+	admin   0.000GB
+	config  0.000GB
+	local   0.000GB
+	test    0.000GB
+
+// Em Alternativa: db.testeCollection.drop()
+> db.dropDatabase() 
+	{ 
+    "dropped" : "test", 
+    "ok" : 1.0
+	}
