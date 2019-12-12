@@ -1,0 +1,86 @@
+// Sistema de Partilha de Vídeos
+
+drop keyspace exer3_2;
+
+create keyspace exer3_2 with replication = {'class':'SimpleStrategy', 'replication_factor' : 3};
+use exer3_2;
+
+// 1. Gestão de utilizadores: entre outros, registar o username, nome, email, selo temporal de registo na plataforma;
+create table user(
+    user_id         uuid,
+    user_username   varchar,
+    user_name       varchar,
+    user_email      varchar,
+    user_timestamp  timestamp,
+
+    //primary key ( user_id, user_timestamp )
+    primary key ( user_id )
+);
+
+create index username
+    on user(user_username);
+
+insert into user (user_id, user_username, user_name, user_email, user_timestamp)
+    values (uuid(), 'jolaranjo', 'João Laranjo', 'joao.laranjo@ua.pt', toTimeStamp(now()));
+insert into user (user_id, user_username, user_name, user_email, user_timestamp)
+    values (uuid(), 'maria', 'Maria M', 'maria@ua.pt', toTimeStamp(now()));
+insert into user (user_id, user_username, user_name, user_email, user_timestamp)
+    values (uuid(), 'jose', 'Jose P', 'jose@ua.pt', toTimeStamp(now()));
+insert into user (user_id, user_username, user_name, user_email, user_timestamp)
+    values (uuid(), 'pedro', 'Pedro M', 'pedro@ua.pt', toTimeStamp(now()));
+
+select * from user
+where user_username = 'jolaranjo';
+
+// 2. Gestão de vídeos: entre outros, registar o autor da partilha, nome do vídeo, descrição, uma ou mais etiquetas (tag) e selo temporal de upload/partilha;
+create table video(
+    video_id            varint,
+    video_author        varchar,
+    video_name          varchar,
+    video_desc          varchar,
+    video_tags          list<varchar>,
+    video_upload_time   timestamp,
+
+    //primary key ( video_id, video_upload_time )
+    primary key ( video_id )
+);
+
+
+
+insert into video (video_id, video_author, video_name, video_desc, video_tags, video_upload_time)
+    values (0001, 'Laranjo', 'ABC to Cassandra', 'Learning Cassandra', ['Tutorial', 'Cassandra', 'Software'], '2017-04-01 11:21:59');
+
+insert into video (video_id, video_author, video_name, video_desc, video_tags, video_upload_time)
+    values (0002, 'Laranjo', 'ABC to Cassandra', 'Learning Cassandra', ['Tutorial', 'Cassandra', 'Software'], '2017-04-01 11:21:59');
+
+// 3. Gestão de comentários: realizados para um vídeo em determinado momento temporal e tem como autor um utilizador;
+create table comment(
+    comment_id          varint,
+    comment_username    varchar,
+    comment_text        varchar,
+    comment_time        timestamp,
+
+    //primary key ( comment_id, comment_time )
+    primary key ( comment_id )
+);
+
+// 4. Gestão de vídeo followers: permitir o registo de utilizadores que seguem determinado vídeo.
+-- Num sistema de informação, permitirá por exemplo notificar todos os followers de um novo comentário inserido para o vídeo;
+create table followers(
+    follow_users        list<varchar>,
+    follow_video_id     varint,
+    follow_comments     list<varchar>,
+
+    //primary key ( comment_id, comment_time )
+    primary key ( follow_video_id )
+);
+
+create table regist_events(
+    revents_video       varint,
+    revents_user        varchar,
+    revents_type        varchar,
+    revents_time        timestamp,
+    revents_moment      varint,
+
+    primary key ( revents_user, revents_video, revents_type )
+)
